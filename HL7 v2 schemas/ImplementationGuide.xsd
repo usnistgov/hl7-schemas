@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2017 (x64) (http://www.altova.com) by NIST (NIST) -->
 <!-- ========================================================================================================
 	HL7 Implementation Guide Schema 
 ============================================================================================================= -->
@@ -106,7 +107,7 @@
 		<xs:complexContent>
 			<xs:extension base="BaseMetaDataType">
 				<xs:sequence>
-					<xs:element ref="MessageProfileIdentifier"/>
+					<xs:element ref="ProfileDefinition"/>
 				</xs:sequence>
 				<xs:attribute name="HL7Version" type="HL7VersionType" use="required">
 					<xs:annotation>
