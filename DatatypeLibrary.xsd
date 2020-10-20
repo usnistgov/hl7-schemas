@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ========================================================================================================
+	HL7 Datatype Library Schema 
+============================================================================================================= -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<!-- INCLUDE DataElement Properties -->
+	<xs:include schemaLocation="./library/HL7v2DataElementAttributes.xsd"/>
+	<xs:element name="Datatypes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Datatype" type="DatatypeType" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+		<!--  Datatype ID must be unique within Datatypes element-->
+		<xs:key name="DatatypeKey">
+			<xs:selector xpath="./Datatype"/>
+			<xs:field xpath="@ID"/>
+		</xs:key>
+		<!--  Component must reference an existing Datatype -->
+		<xs:keyref name="ComponentDatatypeKeyRef" refer="DatatypeKey">
+			<xs:selector xpath="./Datatype/Component"/>
+			<xs:field xpath="@Datatype"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:complexType name="DatatypeType">
+		<xs:annotation>
+			<xs:documentation>Provides descriptive information about the life-cycle of the HL7 v2x Static Definition, as well as authorship and control information.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Annotation" type="AnnotationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Component" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="DataElementType"/>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="ID" type="DatatypeNameType" use="required"/>
+		<xs:attribute name="Name" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Label" type="NonEmptyString" use="optional"/>
+		<xs:attribute name="Description" type="NonEmptyString" use="required"/>
+		<xs:attribute name="AdoptedVersion" type="HL7VersionType" use="optional"/>
+	</xs:complexType>
+</xs:schema>

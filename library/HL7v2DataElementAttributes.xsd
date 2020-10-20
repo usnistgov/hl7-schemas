@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ========================================================================================================
+	HL7 Data Elements Attribures Schema 
+============================================================================================================= -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<!-- INCLUDE SIMPLE TYPES -->
+	<xs:include schemaLocation="HL7v2CommonTypes.xsd"/>
+	<xs:complexType name="DataElementType" abstract="true">
+		<xs:attributeGroup ref="DataElementProperties"/>
+	</xs:complexType>
+	<xs:attributeGroup name="RepeatableProperties">
+		<xs:attribute name="Min" type="PositiveInteger" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					This identifies the minimum number of repetitions of the element that are permitted in a message instance. This attribute should 
+					only be specified if the minimum number of repetitions is greater than 1, as the minimum for other elements is always '0'.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Max" type="IntegerOrStar" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					This identifies the maximum number of repetitions of the element that are permitted in a message instance. This attribute should 
+					only be specified if the maximum number of repetitions is greater than 1 and differs from the minimum attribute (i.e. the maximum
+					number of repetitions is greater than the minimum number of repetitions). The special value '*' may be used to represent 'unlimited' repetitions.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="DataElementProperties">
+		<xs:attribute name="Name" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Usage" type="UsageType" use="required"/>
+		<xs:attribute name="Position" type="PositiveInteger" use="optional"/>
+		<xs:attribute name="Datatype" type="NonEmptyString" use="required">
+			<xs:annotation>
+				<xs:documentation>The datatype of the data element.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MinLength" type="IntegerOrNA" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identifies the minimum allowed length for the content of the element.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="MaxLength" type="IntegerNAOrStar" use="optional">
+			<xs:annotation>
+				<xs:documentation>Identifies the maximum allowed length for the content of the element.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ConfLength" type="ConfLengthType" use="optional">
+			<xs:annotation>
+				<xs:documentation>The minimum length an application must be able to handle.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<!-- <xs:attribute name="Binding" type="NonEmptyString" use="optional"/>
+		<xs:attribute name="BindingStrength" type="BindingStrengthType" use="optional"/>
+		<xs:attribute name="BindingLocation" type="BindingLocationType" use="optional"/> -->
+		<xs:attribute name="FixedValue" type="NonEmptyString" use="optional"/>
+	</xs:attributeGroup>
+</xs:schema>

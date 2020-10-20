@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ========================================================================================================
+	HL7 Simple Types Definitions 
+============================================================================================================= -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:simpleType name="PositiveInteger">
+		<xs:restriction base="xs:integer">
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="IntegerOrStar">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+|\*"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="IntegerOrNA">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+|NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="IntegerNAOrStar">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+|\*|NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="NonEmptyString">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[\s]*[\S].*"/>
+			<!-- \S is the negation of \s  -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="XMLElementNamingConvention">
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="[a-wyzA-WYZ_][a-zA-Z0-9_.-]*|[xX]|[xX][mM]|[xX][a-ln-zA-LN-Z0-9_.-][a-zA-Z0-9_.-]*|[xX][mM][a-km-zA-KM-Z0-9_.-][a-zA-Z0-9_.-]*"
+			/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="UsageType">
+		<xs:annotation>
+			<xs:documentation>
+				Usage identifies the circumstances under which an element appears in a message. Possible values are: 
+				R - Required (must always be present); 
+				RE - Required or Empty (must be present if available); 
+				O - Optional (no guidance on when the element should appear); 
+				C - Conditional (the element is required or allowed to be present when the condition specified in the Predicate element is true);
+				X - Not supported (the element is not supported)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="R"/>
+			<xs:enumeration value="RE"/>
+			<xs:enumeration value="O"/>
+			<xs:enumeration value="C"/>
+			<xs:enumeration value="X"/>
+			<xs:enumeration value="B"/>
+			<xs:enumeration value="W"/>
+			<xs:enumeration value="CE"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ConfLengthType">
+		<xs:restriction base="NonEmptyString">
+			<xs:pattern value="\d*[#=]{0,1}|NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="DatatypeNameType">
+		<xs:restriction base="NonEmptyString">
+			<!-- Alphanumeric and '-' and '_' are alowed -->
+			<xs:pattern value="[a-zA-Z0-9_-]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="SegmentNameType">
+		<xs:restriction base="NonEmptyString">
+			<xs:pattern value="[A-Z]{2}[0-9]{1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="BindingStrengthType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="R"/>
+			<!-- Required -->
+			<xs:enumeration value="S"/>
+			<!-- Suggested -->
+			<xs:enumeration value="U"/>
+			<!-- Undermined -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="BindingLocationType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+|(\d+:\d+)"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="HL7VersionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="2.0"/>
+			<xs:enumeration value="2.1"/>
+			<xs:enumeration value="2.2"/>
+			<xs:enumeration value="2.3"/>
+			<xs:enumeration value="2.3.1"/>
+			<xs:enumeration value="2.4"/>
+			<xs:enumeration value="2.5"/>
+			<xs:enumeration value="2.5.1"/>
+			<xs:enumeration value="2.6"/>
+			<xs:enumeration value="2.7"/>
+			<xs:enumeration value="2.7.1"/>
+			<xs:enumeration value="2.8"/>
+			<xs:enumeration value="2.8.1"/>
+			<xs:enumeration value="2.8.2"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="StatusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Draft"/>
+			<xs:enumeration value="Superceded"/>
+			<xs:enumeration value="Withdrawn"/>
+			<xs:enumeration value="Published"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="MessageCodeType">
+		<xs:restriction base="xs:string">
+			<!-- VALUE FROM HL70076 -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="TriggerEventType">
+		<xs:restriction base="xs:string">
+			<!-- VALUE FROM HL70003 -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="MessageStructureType">
+		<xs:restriction base="xs:string">
+			<!-- VALUE FROM HL70354 -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="MessageTypeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="HL7"/>
+			<xs:enumeration value="Constrainable"/>
+			<xs:enumeration value="Implementation"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="RoleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Sender"/>
+			<xs:enumeration value="Receiver"/>
+			<xs:enumeration value="SenderReceiver"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="AnnotationType">
+		<xs:simpleContent>
+			<xs:extension base="NonEmptyString">
+				<xs:attributeGroup ref="AnnotationAttributes"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:attributeGroup name="AnnotationAttributes">
+		<xs:attribute name="Type" use="required">
+			<xs:annotation>
+				<xs:documentation>
+                </xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:union memberTypes="xs:NMTOKEN">
+					<xs:simpleType>
+						<xs:restriction base="xs:NMTOKEN">
+							<xs:enumeration value="ImpNote">
+								<xs:annotation>
+									<xs:documentation>Implementation Notes provide a general description about how the element is intended to be used, as well as hints on using or interpreting the it.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+							<xs:enumeration value="Description">
+								<xs:annotation>
+									<xs:documentation> An explanation of the associated element.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+							<xs:enumeration value="Definition">
+								<xs:annotation>
+									<xs:documentation> An explanation of the meaning of the element.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+							<xs:enumeration value="DesignComment">
+								<xs:annotation>
+									<xs:documentation> Internal development notes about why particular design decisions were made, outstanding issues and remaining work.  They may contain formatting markup.  Not intended for external publication.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+							<xs:enumeration value="Other">
+								<xs:annotation>
+									<xs:documentation> Additional content related to the element.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+							<xs:enumeration value="Example">
+								<xs:annotation>
+									<xs:documentation> An example instance of the element.</xs:documentation>
+								</xs:annotation>
+							</xs:enumeration>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:union>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="OtherIdentifier" type="NonEmptyString">
+			<xs:annotation>
+				<xs:documentation/>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+</xs:schema>

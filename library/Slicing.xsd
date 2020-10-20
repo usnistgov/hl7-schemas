@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2016 rel. 2 sp1 (x64) (http://www.altova.com) by Caroline Rosin (NIST) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+	<xs:element name="SlicingDocument">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Slicing" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- Slicing type definition :  discriminatorExists, discriminatorFixed, discriminatorPattern, ordered, non-selective -->
+	<xs:simpleType name="slicingType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="discriminatorExists"/>
+			<xs:enumeration value="discriminatorFixed"/>
+			<xs:enumeration value="discriminatorPattern"/>
+			<xs:enumeration value="ordered"/>
+			<xs:enumeration value="non-selective"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Slicing" type="xs:anyType">
+		<!-- Create different definitions based on the value of the SlicingType attribute -->
+		<xs:alternative test="@SlicingType='discriminatorExists'" type="slicingExists"/>
+		<xs:alternative test="@SlicingType='discriminatorFixed'" type="slicingFixed"/>
+		<xs:alternative test="@SlicingType='discriminatorPattern'" type="slicingPattern"/>
+		<xs:alternative test="@SlicingType='ordered'" type="slicingOrdered"/>
+		<xs:alternative test="@SlicingType='non-selective'" type="slicingNon-Selective"/>
+		<!-- For ordered slices, the value for @Occurence must be unique -->
+		<xs:unique name="UniqueOccurence">
+			<xs:selector xpath="Slice"/>
+			<xs:field xpath="@Occurrence"/>
+		</xs:unique>
+	</xs:element>
+	<!-- discriminatorExists mode -->
+	<xs:complexType name="slicingExists">
+		<xs:sequence>
+			<xs:element name="Slice" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Discriminator" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Position" type="xs:string" use="required"/>
+								<xs:attribute name="Value" type="xs:boolean" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attributeGroup ref="discriminatorAttr"/>
+				</xs:complexType>
+				<!-- @Position  value is unique under a given Slice -->
+				<xs:unique name="uniquePosition">
+					<xs:selector xpath="Discriminator"/>
+					<xs:field xpath="@Position"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SlicingType" type="slicingType" use="required" fixed="discriminatorExists"/>
+		<xs:attribute name="DefaultDataType" type="xs:string"/>
+	</xs:complexType>
+	<!-- discriminatorFixed mode -->
+	<xs:complexType name="slicingFixed">
+		<xs:sequence>
+			<xs:element name="Slice" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Discriminator" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Position" type="xs:string" use="required"/>
+								<xs:attribute name="Value" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attributeGroup ref="discriminatorAttr"/>
+				</xs:complexType>
+				<!-- @Position  value is unique under a given Slice -->
+				<xs:unique ref="uniquePosition"/>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SlicingType" type="slicingType" use="required" fixed="discriminatorFixed"/>
+		<xs:attribute name="DefaultDataType" type="xs:string"/>
+	</xs:complexType>
+	<!-- discriminatorPattern mode -->
+	<xs:complexType name="slicingPattern">
+		<xs:sequence>
+			<xs:element name="Slice" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Discriminator" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Position" type="xs:string" use="required"/>
+								<xs:attribute name="Value" type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attributeGroup ref="discriminatorAttr"/>
+				</xs:complexType>
+				<!-- @Position  value is unique under a given Slice -->
+				<xs:unique ref="uniquePosition"/>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SlicingType" type="slicingType" use="required" fixed="discriminatorPattern"/>
+		<xs:attribute name="DefaultDataType" type="xs:string"/>
+	</xs:complexType>
+	<!-- ordered mode -->
+	<xs:complexType name="slicingOrdered">
+		<xs:sequence>
+			<xs:element name="Slice" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="Datatype" use="required"/>
+					<xs:attribute name="Occurrence" type="xs:positiveInteger" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SlicingType" type="slicingType" use="required" fixed="ordered"/>
+		<xs:attribute name="DefaultDataType" type="xs:string"/>
+	</xs:complexType>
+	<!-- non-selective mode -->
+	<xs:complexType name="slicingNon-Selective">
+		<xs:sequence>
+			<xs:element name="Slice" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="Datatype" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SlicingType" type="slicingType" use="required" fixed="non-selective"/>
+	</xs:complexType>
+	<!-- Attribute group for all the discriminator-based modes -->
+	<xs:attributeGroup name="discriminatorAttr">
+		<xs:attribute name="Datatype" use="required"/>
+		<xs:attribute name="Min" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="Max" type="positiveOrStar" use="required"/>
+	</xs:attributeGroup>
+	<!-- Simple type that represents positive (incliding 0) integer and the star (*) character. -->
+	<xs:simpleType name="positiveOrStar">
+		<xs:union memberTypes="positive star"/>
+	</xs:simpleType>
+	<xs:simpleType name="positive">
+		<xs:restriction base="xs:positiveInteger"/>
+	</xs:simpleType>
+	<xs:simpleType name="star">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="*"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

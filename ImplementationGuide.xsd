@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ========================================================================================================
+	HL7 Implementation Guide Schema 
+============================================================================================================= -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+	<!-- INCLUDE DataElement Properties -->
+	<xs:include schemaLocation="./library/HL7v2DataElementAttributes.xsd"/>
+	<!-- INCLUDE Message Profile ID -->
+	<xs:include schemaLocation="./library/MessageProfileIdentifier.xsd"/>
+	<!-- INCLUDE Slicing -->
+	<xs:include schemaLocation="./library/Slicing.xsd"/>
+	<!--  
+	=============================================================================================================
+	=========================         Root  Element  Definition           =======================================
+	============================================================================================================= -->
+	<xs:element name="ImplementationGuide" type="ImplementationGuideType">
+		<!--  Segment ID must be unique within Segments element-->
+		<xs:key name="SegmentKey">
+			<xs:selector xpath="./Segments/Segment"/>
+			<xs:field xpath="@ID"/>
+		</xs:key>
+		<!--  Segment in a message must reference an existing Segment -->
+		<xs:keyref name="MSegmentKeyRef" refer="SegmentKey">
+			<xs:selector xpath=".//Segment"/>
+			<xs:field xpath="@Ref"/>
+		</xs:keyref>
+	</xs:element>
+	<!-- 
+	=============================================================================================================
+	=========================         Metadata Types Definitions           =======================================
+	============================================================================================================= -->
+	<xs:complexType name="BaseMetaDataType">
+		<xs:sequence>
+			<xs:element name="Authors" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>List of authors that created the implementation guide/message profile.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Author" type="NonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Name" type="NonEmptyString" use="required">
+			<xs:annotation>
+				<xs:documentation>The natural language name of the implementation guide/message profile. 
+									Commonly used as the title of the implementation guide/message profile.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Description" type="NonEmptyString" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides a short summary and intended use of the implementation guide/message profile.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Version" type="NonEmptyString" use="optional">
+			<xs:annotation>
+				<xs:documentation>The version of the implementation guide/message profile as decided by the author. There is no prescribed format.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Organization" type="NonEmptyString" use="optional">
+			<xs:annotation>
+				<xs:documentation>The name/identification of the organization or owner of the implementation guide/message profile.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="CreateDate" type="NonEmptyString" use="optional">
+			<xs:annotation>
+				<xs:documentation>The date the implementation guide/message profile was created. YYYYMMDD</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="LastUpdateDate" type="NonEmptyString" use="optional">
+			<xs:annotation>
+				<xs:documentation>The date the implementation guide/message profile was last updated. YYYYMMDD</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="Status" type="StatusType" use="required">
+			<xs:annotation>
+				<xs:documentation>The status of the implementation guide/message profile.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="PublishDate" type="NonEmptyString" use="optional">
+			<xs:annotation>
+				<xs:documentation>If the status is “publish”, this is the date the implementation guide/message profile was published. Once published, the version is static.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ImplementationGuideMetadataType">
+		<xs:complexContent>
+			<xs:extension base="BaseMetaDataType">
+				<xs:sequence>
+					<xs:element name="HL7Versions" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>List of HL7 profile versions included in the implementation guide. Generally, most implementation guides include message profiles of the same HL7 version.</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Version" type="HL7VersionType" minOccurs="1" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MessageProfileMetadataType">
+		<xs:complexContent>
+			<xs:extension base="BaseMetaDataType">
+				<xs:sequence>
+					<xs:element ref="MessageProfileIdentifier"/>
+				</xs:sequence>
+				<xs:attribute name="HL7Version" type="HL7VersionType" use="required">
+					<xs:annotation>
+						<xs:documentation>The HL7 core version of the message profile; i.e., the version of the HL7 v2 abstract message definition. Corresponds to MSH-12.1. Value is obtained from table HL70104.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MessageCode" type="MessageCodeType" use="required">
+					<xs:annotation>
+						<xs:documentation>The HL7 v2 Message Code (e.g., ADT). Corresponds to MSH-9.1. Value is obtained from table HL70076.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="TriggerEvent" type="TriggerEventType" use="required">
+					<xs:annotation>
+						<xs:documentation>The HL7 v2 Trigger Event (e.g., A04). Corresponds to MSH-9.2. Value is obtained from table HL70003.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="MessageStructure" type="MessageStructureType" use="required">
+					<xs:annotation>
+						<xs:documentation>The HL7 v2 Message Structure (e.g., ADT_A01). Corresponds to MSH-9.3. Value is obtained from table HL70354.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Type" type="MessageTypeType" use="required">
+					<xs:annotation>
+						<xs:documentation>The type (level) of message profiles.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="Role" type="RoleType" use="optional">
+					<xs:annotation>
+						<xs:documentation>The role (perspective) of the message profile.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- 
+	=============================================================================================================
+	=========================         Complex Types Definitions           =======================================
+	============================================================================================================= -->
+	<xs:complexType name="DynamicMappingType">
+		<xs:sequence>
+			<xs:element name="Mapping" minOccurs="1" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Case" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Value" type="NonEmptyString" use="required"/>
+								<xs:attribute name="Datatype" type="DatatypeNameType" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="Position" type="PositiveInteger" use="required">
+						<xs:annotation>
+							<xs:documentation>The data element which data type is 'varies'</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="Reference" type="PositiveInteger" use="required">
+						<xs:annotation>
+							<xs:documentation>The primitive data element that defines the data type to use depending on its value</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FieldType">
+		<xs:complexContent>
+			<xs:extension base="DataElementType">
+				<xs:sequence>
+					<xs:element name="Annotation" type="AnnotationType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="Slicing" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attributeGroup ref="RepeatableProperties"/>
+				<xs:attribute name="ItemNo" type="NonEmptyString" use="optional"/>
+				<xs:attribute name="AdoptedVersion" type="HL7VersionType" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SegmentType">
+		<xs:annotation>
+			<xs:documentation>Documents the characteristics of a single HL7 segment within the context of a particular message or segment group.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Annotation" type="AnnotationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="DynamicMapping" type="DynamicMappingType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="Field" type="FieldType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Name" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Label" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Description" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Version" type="NonEmptyString"/>
+		<xs:attribute name="AdoptedVersion" type="HL7VersionType" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="SegmentRefType">
+		<xs:attribute name="Ref" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Usage" type="UsageType" use="required"/>
+		<xs:attributeGroup ref="RepeatableProperties"/>
+	</xs:complexType>
+	<xs:group name="GroupStructure">
+		<xs:sequence>
+			<xs:element name="Annotation" type="AnnotationType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="Segment" type="SegmentRefType" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="Group" type="GroupType" minOccurs="1" maxOccurs="1"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="GroupType">
+		<xs:annotation>
+			<xs:documentation>Documents the characteristics of a grouping of HL7 segments within the context of a particular message or segment group.</xs:documentation>
+		</xs:annotation>
+		<xs:group ref="GroupStructure" minOccurs="1" maxOccurs="1"/>
+		<xs:attribute name="ID" type="NonEmptyString" use="required"/>
+		<xs:attribute name="Name" type="XMLElementNamingConvention" use="required"/>
+		<xs:attribute name="Usage" type="UsageType" use="required"/>
+		<xs:attributeGroup ref="RepeatableProperties"/>
+	</xs:complexType>
+	<xs:complexType name="MessageType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MetaData" type="MessageProfileMetadataType" minOccurs="1" maxOccurs="1"/>
+			<xs:group ref="GroupStructure" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ImplementationGuideType">
+		<xs:sequence>
+			<xs:element name="MetaData" type="ImplementationGuideMetadataType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Messages" minOccurs="1" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Message" type="MessageType" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Segments" minOccurs="1" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Segment" type="SegmentType" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

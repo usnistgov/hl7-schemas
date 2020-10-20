@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+	<xs:element name="MessageProfileIdentifier" type="MessageProfileIdType"/>
+	<xs:complexType name="MessageProfileIdType">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element ref="CoreProfileID"/>
+				<xs:element ref="CompositeProfile"/>
+			</xs:choice>
+			<xs:element ref="ProfileComponentID" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="ValueSetLibraryID" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CoreProfileID" type="Identifier"/>
+	<xs:element name="CompositeProfileID" type="Identifier"/>
+	<xs:element name="ProfileComponentID" type="Identifier"/>
+	<xs:complexType name="Identifier">
+		<xs:sequence>
+			<xs:element ref="EntityIdentifier" minOccurs="0"/>
+			<xs:element ref="NamespaceID" minOccurs="0"/>
+			<xs:element ref="UniversalID" minOccurs="0"/>
+			<xs:element ref="UniversalIDType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="EntityIdentifier" type="xs:string"/>
+	<xs:element name="NamespaceID" type="xs:string"/>
+	<xs:element name="UniversalID" type="xs:string"/>
+	<xs:element name="UniversalIDType" type="xs:string"/>
+	<xs:element name="CompositeProfile">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="CompositeProfileID"/>
+				<xs:element ref="CoreProfileID"/>
+				<xs:element ref="ProfileComponentID" maxOccurs="unbounded"/>
+				<xs:element ref="ValueSetLibraryID" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ValueSetLibraryID" type="Identifier"/>
+</xs:schema>
