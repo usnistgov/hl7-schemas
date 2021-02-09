@@ -129,6 +129,8 @@
 		<xs:attribute name="Path1" type="PathType" use="required" />
 		<xs:attribute name="Operator" type="OperatorType" use="required" />
 		<xs:attribute name="Path2" type="PathType" use="required" />
+		<xs:attribute name="Truncated" type="xs:boolean" use="optional" />
+		<xs:attribute name="IdenticalEquality" type="xs:boolean" use="optional" />
 		<xs:attribute name="NotPresentBehavior" type="BehaviorType" use="optional" />
 	</xs:complexType>
 	
@@ -141,6 +143,17 @@
 		========================= Value Expressions ======================================= 
 		============================================================================================================= -->
 	
+	<xs:complexType name="ComplexPathValueType">
+		<xs:attribute name="Path1" type="PathType" use="required" />
+		<xs:attribute name="Operator" type="OperatorType" use="required" />
+		<xs:attribute name="Path2" type="PathType" use="required" />
+		<xs:attribute name="Truncated" type="xs:boolean" use="optional" />
+		<xs:attribute name="IdenticalEquality" type="xs:boolean" use="optional" />
+		<xs:attribute name="NotPresentBehavior" type="BehaviorType" use="optional" />
+		<xs:attribute name="Strict" type="xs:boolean" use="optional" />
+	</xs:complexType>
+
+
 	<xs:complexType name="PlainTextType">
 		<xs:attribute name="Path" type="PathType" use="required" />
 		<xs:attribute name="Text" type="NonEmptyString" use="required" />
@@ -183,6 +196,9 @@
 		<xs:attribute name="Operator" type="OperatorType" use="required" />
 		<xs:attribute name="Value" type="NonEmptyString" use="required" />
 		<xs:attribute name="Type" type="ValueType" default="String" />
+		<xs:attribute name="Truncated" type="xs:boolean" use="optional" />
+		<xs:attribute name="IdenticalEquality" type="xs:boolean" use="optional" />
+		<xs:attribute name="AtLeastOnce" type="xs:boolean" use="optional" />
 		<xs:attribute name="NotPresentBehavior" type="BehaviorType" use="optional" />
 	</xs:complexType>
 	
@@ -202,6 +218,15 @@
 		<xs:group ref="AnyExpressionGroup" minOccurs="1" maxOccurs="1" />
 	</xs:complexType>
 	
+	<xs:complexType name="SubContextType">
+		<xs:group ref="AnyExpressionGroup" minOccurs="1" maxOccurs="1" />
+		<xs:attribute name="Path" type="PathType" use="required" />
+		<xs:attribute name="MinOccurrence" type="PositiveInteger" use="optional"/>
+		<xs:attribute name="MaxOccurrence" type="IntegerOrStar" use="optional"/>
+		<xs:attribute name="AtLeastOnce" type="xs:boolean" use="optional" />
+		<xs:attribute name="NotPresentBehavior" type="BehaviorType" use="optional" />
+	</xs:complexType>
+
 	<xs:complexType name="ANDType">
 		<xs:group ref="AnyExpressionGroup" minOccurs="2" maxOccurs="2" />
 	</xs:complexType>
@@ -250,6 +275,8 @@
 				maxOccurs="1" />
 			<xs:element name="PathValue" type="PathValueType"
 				minOccurs="1" maxOccurs="1" />
+			<xs:element name="ComplexPathValue" type="ComplexPathValueType"
+						minOccurs="1" maxOccurs="1" />
 			<xs:element name="StringFormat" type="StringFormatType"
 				minOccurs="1" maxOccurs="1" />
 			<xs:element name="PlainText" type="PlainTextType"
@@ -276,6 +303,7 @@
 	<xs:group name="AnyExpressionGroup">
 		<xs:choice>
 			<xs:group ref="ExpressionGroup" />
+			<xs:element name="SubContext" type="SubContextType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="XOR" type="XORType" minOccurs="1"
 				maxOccurs="1" />
 			<xs:element name="IMPLY" type="ImplyType" minOccurs="1"

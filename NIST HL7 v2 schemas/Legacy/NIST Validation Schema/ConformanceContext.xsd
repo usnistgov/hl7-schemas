@@ -168,7 +168,7 @@
 	<xs:complexType name="PatternType">
 		<xs:sequence minOccurs="1" maxOccurs="1">
 			<xs:element name="Trigger" type="TriggerType" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="Constraints" type="OrderIndifferentConstraintsType"  minOccurs="0" maxOccurs="1"/>
+			<xs:element name="Constraints" type="OrderIndifferentConstraintsType"  minOccurs="1" maxOccurs="1"/>
 			<xs:element name="Contexts" type="ContextsType"  minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="Cardinality" type="xs:int" use="optional"/>
