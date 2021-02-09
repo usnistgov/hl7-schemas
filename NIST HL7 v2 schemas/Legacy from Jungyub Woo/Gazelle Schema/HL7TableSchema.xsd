@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="Specification">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Conformance"/>
+        <xs:element ref="Encodings"/>
+        <xs:element ref="hl7tables"/>
+      </xs:sequence>
+      <xs:attribute name="ConformanceType" use="required" type="xs:NCName"/>
+      <xs:attribute name="HL7OID" use="required"/>
+      <xs:attribute name="HL7Version" use="required" type="xs:integer"/>
+      <xs:attribute name="OrgName" use="required" type="xs:NCName"/>
+      <xs:attribute name="ProcRule" use="required" type="xs:NCName"/>
+      <xs:attribute name="Role" use="required" type="xs:NCName"/>
+      <xs:attribute name="SpecName" use="required" type="xs:NCName"/>
+      <xs:attribute name="SpecVersion" use="required" type="xs:decimal"/>
+      <xs:attribute name="Status" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Conformance">
+    <xs:complexType>
+      <xs:attribute name="AccAck" use="required" type="xs:NCName"/>
+      <xs:attribute name="AppAck" use="required" type="xs:NCName"/>
+      <xs:attribute name="DynamicID" use="required"/>
+      <xs:attribute name="MsgAckMode" use="required" type="xs:NCName"/>
+      <xs:attribute name="QueryMode" use="required"/>
+      <xs:attribute name="QueryStatus" use="required" type="xs:NCName"/>
+      <xs:attribute name="StaticID" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Encodings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Encoding"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Encoding" type="xs:NCName"/>
+  <xs:element name="hl7tables">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="hl7table"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="hl7table">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="tableElement"/>
+      </xs:sequence>
+      <xs:attribute name="codeSys" use="required"/>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="tableElement">
+    <xs:complexType>
+      <xs:attribute name="date" use="required"/>
+      <xs:attribute name="description" use="required"/>
+      <xs:attribute name="code" use="required"/>
+      <xs:attribute name="creator" use="required"/>
+      <xs:attribute name="displayName" use="required"/>
+      <xs:attribute name="instruction" use="required"/>
+      <xs:attribute name="order" use="required" type="xs:integer"/>
+      <xs:attribute name="source" use="required" type="xs:NCName"/>
+      <xs:attribute name="usage" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="Optional"/>
+            <xs:enumeration value="Forbidden"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
