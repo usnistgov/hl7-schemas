@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2016 rel. 2 sp1 (x64) (http://www.altova.com) by Caroline Rosin (NIST) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
 	<xs:element name="SlicingDocument">
 		<xs:complexType>
 			<xs:sequence>
@@ -16,6 +15,7 @@
 			<xs:enumeration value="discriminatorFixed"/>
 			<xs:enumeration value="discriminatorPattern"/>
 			<xs:enumeration value="ordered"/>
+			<xs:enumeration value="assertion"/>
 			<xs:enumeration value="non-selective"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -25,6 +25,7 @@
 		<xs:alternative test="@SlicingType='discriminatorFixed'" type="slicingFixed"/>
 		<xs:alternative test="@SlicingType='discriminatorPattern'" type="slicingPattern"/>
 		<xs:alternative test="@SlicingType='ordered'" type="slicingOrdered"/>
+		<xs:alternative test="@SlicingType='assertion'" type="slicingAssertion"/>
 		<xs:alternative test="@SlicingType='non-selective'" type="slicingNon-Selective"/>
 		<!-- For ordered slices, the value for @Occurence must be unique -->
 		<xs:unique name="UniqueOccurence">
@@ -113,6 +114,28 @@
 		</xs:sequence>
 		<xs:attribute name="SlicingType" type="slicingType" use="required" fixed="ordered"/>
 		<xs:attribute name="DefaultDataType" type="xs:string"/>
+	</xs:complexType>
+	<!-- assertion type -->
+	<xs:complexType name="slicingAssertion">
+		<xs:sequence>
+			<xs:element name="Slice" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Description" minOccurs="1" maxOccurs="1" type="xs:string"/>
+						<xs:element name="Assertion" minOccurs="1" maxOccurs="1">
+							<xs:complexType>
+								<xs:sequence>
+									<!-- open to any assertion language -->
+									<xs:any minOccurs="0"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="Datatype" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SlicingType" type="slicingType" use="required" fixed="assertion"/>
 	</xs:complexType>
 	<!-- non-selective mode -->
 	<xs:complexType name="slicingNon-Selective">
